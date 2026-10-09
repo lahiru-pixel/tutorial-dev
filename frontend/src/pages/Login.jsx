@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../services/supabase';
+import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, Loader2 } from 'lucide-react';
 
 export default function Login() {
@@ -8,19 +8,22 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setError(error.message);
-    } else {
+
+    try {
+      await login(email, password);
       navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Invalid email or password');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -70,7 +73,7 @@ export default function Login() {
           </button>
         </form>
         <p className="mt-6 text-center text-gray-400 text-sm">
-          Don't have an account? <Link to="/register" className="text-indigo-400 hover:text-indigo-300 transition">Sign up</Link>
+          Don't have an account? create one <Link to="/register" className="text-indigo-400 hover:text-indigo-300 transition">Sign up</Link>
         </p>
       </div>
     </div>
