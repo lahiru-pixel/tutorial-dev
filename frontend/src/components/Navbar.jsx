@@ -1,13 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../services/supabase';
 
 export default function Navbar() {
-  const { user, profile } = useAuth();
+  const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    logout();
     navigate('/login');
   };
 
@@ -26,10 +25,10 @@ export default function Navbar() {
             <div className="text-sm text-gray-400 flex items-center">
               {profile?.name || user.email}
               {profile?.role === 'student' && !profile?.is_paid && (
-                 <span className="ml-2 text-xs bg-red-900/50 text-red-400 px-2 py-0.5 rounded-full border border-red-800">Unpaid</span>
+                <span className="ml-2 text-xs bg-red-900/50 text-red-400 px-2 py-0.5 rounded-full border border-red-800">Unpaid</span>
               )}
             </div>
-            <button onClick={handleLogout} className="px-4 py-2 text-sm bg-gray-700 hover:bg-gray-600 rounded-lg transition font-medium">
+            <button onClick={handleLogout} className="px-4 py-2 text-sm bg-gray-700 hover:bg-gray-600 rounded-lg transition font-medium cursor-pointer">
               Logout
             </button>
           </>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../services/supabase';
+import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, User, Loader2 } from 'lucide-react';
 
 export default function Register() {
@@ -9,25 +9,22 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signUp({ 
-      email, 
-      password,
-      options: {
-        data: { name }
-      }
-    });
-    if (error) {
-      setError(error.message);
-    } else {
+
+    try {
+      await register(name, email, password);
       navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to register account');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

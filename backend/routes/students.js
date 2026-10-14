@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../supabaseClient');
+const Enrollment = require('../models/Enrollment');
 const authenticate = require('../middleware/authenticate');
 
 router.use(authenticate);
@@ -8,18 +8,14 @@ router.use(authenticate);
 // GET /api/students/courses -> get enrolled courses for logged in student
 router.get('/courses', async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('enrollments')
-      .select('course_id, enrolled_at, courses(*)')
-      .eq('student_id', req.user.id);
+    const enrollments = await Enrollment.find({ student_id: req.user._id }).populate('course_id');
+    const courses = enrollments
+      .map(enrollment => enrollment.course_id)
+      .filter(course => course !== null);
 
-    if (error) throw error;
-    
-    // Filter out cases where courses might be null (though DB constraint should prevent it)
-    const courses = data.map(enrollment => enrollment.courses).filter(c => c !== null);
     res.json(courses);
   } catch (err) {
-    console.error(err);
+    console.error('Fetch student courses error:', err);
     res.status(500).json({ error: 'Failed to fetch student courses' });
   }
 });
