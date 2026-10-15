@@ -1,4 +1,5 @@
-const supabase = require('../supabaseClient');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 const authenticate = async (req, res, next) => {
   try {
@@ -8,28 +9,22 @@ const authenticate = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    
-    // Verify token with Supabase
-    const { data, error } = await supabase.auth.getUser(token);
-    
-    if (error || !data.user) {
-      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
     }
 
-    // Fetch the user's profile to get role and is_paid status
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', data.user.id)
-      .single();
+    req.user = user.toJSON();
+    // Keep _id accessible
+    req.user._id = user._id;
 
-    if (profileError || !profile) {
-      return res.status(401).json({ error: 'Profile not found' });
-    }
-
-    req.user = profile;
     next();
   } catch (err) {
+    if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Unauthorized: Invalid or expired token' });
+    }
     console.error('Auth middleware error:', err);
     res.status(500).json({ error: 'Internal server error during authentication' });
   }

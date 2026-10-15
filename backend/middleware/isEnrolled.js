@@ -1,4 +1,5 @@
-const supabase = require('../supabaseClient');
+const Video = require('../models/Video');
+const Enrollment = require('../models/Enrollment');
 
 const isEnrolled = async (req, res, next) => {
   try {
@@ -19,33 +20,26 @@ const isEnrolled = async (req, res, next) => {
 
     // If accessing a video route like /api/videos/:id/watch
     if (!courseId && req.baseUrl.includes('/videos') && req.params.id) {
-      const { data: video, error: videoError } = await supabase
-        .from('videos')
-        .select('course_id')
-        .eq('id', req.params.id)
-        .single();
-        
-      if (videoError || !video) {
+      const video = await Video.findById(req.params.id);
+      if (!video) {
         return res.status(404).json({ error: 'Video not found' });
       }
       courseId = video.course_id;
     } else if (!courseId && req.params.id) {
-        // Fallback if the route is /api/courses/:id
-        courseId = req.params.id;
+      // Fallback if the route is /api/courses/:id
+      courseId = req.params.id;
     }
 
     if (!courseId) {
       return res.status(400).json({ error: 'Course ID missing for enrollment check' });
     }
 
-    const { data: enrollment, error } = await supabase
-      .from('enrollments')
-      .select('*')
-      .eq('student_id', req.user.id)
-      .eq('course_id', courseId)
-      .single();
+    const enrollment = await Enrollment.findOne({
+      student_id: req.user._id,
+      course_id: courseId,
+    });
 
-    if (error || !enrollment) {
+    if (!enrollment) {
       return res.status(403).json({ error: 'Forbidden: Not enrolled in this course' });
     }
 
