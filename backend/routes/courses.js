@@ -1,48 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../supabaseClient');
+const Course = require('../models/Course');
+const Video = require('../models/Video');
 
 // GET /api/courses -> list published courses
 router.get('/', async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('courses')
-      .select('*')
-      .eq('is_published', true)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    res.json(data);
+    const courses = await Course.find({ is_published: true }).sort({ created_at: -1 });
+    res.json(courses);
   } catch (err) {
-    console.error(err);
+    console.error('Fetch courses error:', err);
     res.status(500).json({ error: 'Failed to fetch courses' });
   }
 });
 
-// GET /api/courses/:id -> course details + video list (titles only)
+// GET /api/courses/:id -> course details + video list (without exposing secure links)
 router.get('/:id', async (req, res) => {
   try {
-    const { data: course, error: courseError } = await supabase
-      .from('courses')
-      .select('*')
-      .eq('id', req.params.id)
-      .single();
-
-    if (courseError || !course) {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
-    const { data: videos, error: videosError } = await supabase
-      .from('videos')
-      .select('id, title, description, order_index, duration_text, created_at')
-      .eq('course_id', req.params.id)
-      .order('order_index', { ascending: true });
+    const videos = await Video.find({ course_id: req.params.id })
+      .select('id title description order_index duration_text created_at')
+      .sort({ order_index: 1 });
 
-    if (videosError) throw videosError;
-
-    res.json({ ...course, videos });
+    res.json({ ...course.toJSON(), videos });
   } catch (err) {
-    console.error(err);
+    console.error('Fetch course details error:', err);
     res.status(500).json({ error: 'Failed to fetch course details' });
   }
 });
