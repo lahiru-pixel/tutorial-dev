@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../services/supabase';
+import api from '../services/api';
 
 const AuthContext = createContext({});
 
@@ -8,58 +8,60 @@ export const AuthProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId) => {
+  const fetchCurrentUser = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setUser(null);
+      setProfile(null);
+      setLoading(false);
+      return;
+    }
+
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-        
-      if (!error && data) {
-        setProfile(data);
-      }
+      const res = await api.get('/api/auth/me');
+      const currentUser = res.data.user;
+      setUser(currentUser);
+      setProfile(currentUser);
     } catch (err) {
-      console.error("Error fetching profile", err);
+      console.error('Error fetching current user:', err);
+      localStorage.removeItem('token');
+      setUser(null);
+      setProfile(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Get active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          fetchProfile(session.user.id).then(() => setLoading(false));
-        } else {
-          setProfile(null);
-          setLoading(false);
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    fetchCurrentUser();
   }, []);
 
-  // Set loading to false once profile is fetched
-  useEffect(() => {
-    if (user && profile) {
-      setLoading(false);
-    }
-  }, [user, profile]);
+  const login = async (email, password) => {
+    const res = await api.post('/api/auth/login', { email, password });
+    const { token, user: loggedInUser } = res.data;
+    localStorage.setItem('token', token);
+    setUser(loggedInUser);
+    setProfile(loggedInUser);
+    return loggedInUser;
+  };
+
+  const register = async (name, email, password) => {
+    const res = await api.post('/api/auth/register', { name, email, password });
+    const { token, user: registeredUser } = res.data;
+    localStorage.setItem('token', token);
+    setUser(registeredUser);
+    setProfile(registeredUser);
+    return registeredUser;
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setProfile(null);
+  };
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading }}>
+    <AuthContext.Provider value={{ user, profile, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
