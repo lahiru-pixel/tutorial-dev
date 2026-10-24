@@ -20,18 +20,18 @@ export default function WatchPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <div className="p-8 text-center text-gray-400">Loading video securely...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-600">Loading video securely...</div>;
 
   if (error) return (
-    <div className="p-8 max-w-3xl mx-auto w-full">
-      <div className="bg-red-500/10 border border-red-500 text-red-500 p-6 rounded-xl flex items-center gap-4">
+    <div className="p-4 sm:p-8 max-w-3xl mx-auto w-full">
+      <div className="bg-red-500/10 border border-red-500 text-brand-red p-6 rounded-xl flex items-center gap-4">
         <AlertCircle className="w-8 h-8" />
         <div>
           <h3 className="font-bold text-lg mb-1">Access Denied</h3>
           <p>{error}</p>
         </div>
       </div>
-      <button onClick={() => navigate(-1)} className="mt-6 flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition">
+      <button onClick={() => navigate(-1)} className="mt-6 flex items-center gap-2 text-brand-red hover:text-brand-red-dark transition">
         <ArrowLeft className="w-4 h-4" /> Go Back
       </button>
     </div>
@@ -48,11 +48,11 @@ export default function WatchPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-5xl mx-auto w-full flex-1 flex flex-col">
-      <button onClick={() => navigate(-1)} className="mb-6 flex items-center gap-2 text-gray-400 hover:text-white w-fit transition">
+      <button onClick={() => navigate(-1)} className="mb-6 flex items-center gap-2 text-slate-600 hover:text-brand-purple w-fit transition">
         <ArrowLeft className="w-4 h-4" /> Back to Course
       </button>
       
-      <div className="bg-black rounded-2xl overflow-hidden shadow-2xl aspect-video w-full border border-gray-800">
+      <div className="bg-black rounded-2xl overflow-hidden shadow-2xl aspect-video w-full border border-slate-200">
         {videoId ? (
           <iframe
             width="100%"
@@ -64,16 +64,16 @@ export default function WatchPage() {
             allowFullScreen
           ></iframe>
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-500">
+          <div className="w-full h-full flex items-center justify-center text-slate-300">
             Invalid YouTube URL
           </div>
         )}
       </div>
       
-      <div className="mt-6 bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-sm">
-        <h1 className="text-2xl font-bold text-white mb-2">{video.title}</h1>
+      <div className="mt-6 bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <h1 className="text-2xl font-bold text-brand-purple mb-2">{video.title}</h1>
         {video.description && (
-          <p className="text-gray-400">{video.description}</p>
+          <p className="text-slate-600">{video.description}</p>
         )}
       </div>
     </div>

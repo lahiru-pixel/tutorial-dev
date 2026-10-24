@@ -1,7 +1,33 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-red: #E30012;
+  --color-brand-red-dark: #B8000F;
+  --color-brand-purple: #24143E;
+}
+
 @layer base {
   body {
-    @apply bg-gray-900 text-gray-100;
+    @apply m-0 bg-slate-50 text-slate-800;
+  }
+
+  h1, h2, h3, h4 {
+    @apply text-brand-purple;
+  }
+
+  button, a, input, select, textarea {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red;
+  }
+
+  button:not(:disabled), select:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled, input:disabled, select:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  input[type="checkbox"] {
+    accent-color: var(--color-brand-red);
   }
 }

@@ -137,25 +137,25 @@ export default function ManageVideos() {
     setDurationText('');
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-400">Loading...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-600">Loading...</div>;
 
   return (
-    <div className="p-8 max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-8">
+    <div className="p-4 sm:p-8 max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-8">
       {/* Sidebar */}
       <div className="w-full md:w-64 space-y-2">
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-          <h3 className="font-bold text-gray-400 uppercase text-xs tracking-wider mb-4">Admin Menu</h3>
+        <div className="bg-white rounded-xl p-4 border border-slate-200">
+          <h3 className="font-bold text-brand-purple uppercase text-xs tracking-wider mb-4">Admin Menu</h3>
           <nav className="space-y-1">
-            <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 transition">
+            <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100 transition">
               <DollarSign className="w-5 h-5" /> Dashboard
             </Link>
-            <Link to="/admin/students" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 transition">
+            <Link to="/admin/students" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100 transition">
               <Users className="w-5 h-5" /> Manage Students
             </Link>
-            <Link to="/admin/courses" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 transition">
+            <Link to="/admin/courses" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-100 transition">
               <BookOpen className="w-5 h-5" /> Manage Courses
             </Link>
-            <Link to="/admin/videos" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-600 text-white transition">
+            <Link to="/admin/videos" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-brand-red text-white transition">
               <PlayCircle className="w-5 h-5" /> Manage Videos
             </Link>
           </nav>
@@ -163,14 +163,14 @@ export default function ManageVideos() {
       </div>
       
       {/* Content */}
-      <div className="flex-1 space-y-8">
+      <div className="min-w-0 flex-1 space-y-8">
         <div>
-          <h1 className="text-3xl font-bold mb-6 text-white">Manage Videos</h1>
+          <h1 className="text-3xl font-bold mb-6 text-brand-purple">Manage Videos</h1>
           
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 mb-8">
-            <label className="block text-sm font-medium text-gray-400 mb-2">Select Course to Manage</label>
+          <div className="bg-white rounded-xl p-6 border border-slate-200 mb-8">
+            <label className="block text-sm font-medium text-slate-600 mb-2">Select Course to Manage</label>
             <select 
-              className="w-full md:w-1/2 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white outline-none focus:border-indigo-500 font-medium"
+              className="w-full md:w-1/2 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-brand-purple outline-none focus:border-brand-red font-medium"
               value={selectedCourse} onChange={e => setSelectedCourse(e.target.value)}
             >
               {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
@@ -181,47 +181,47 @@ export default function ManageVideos() {
           {selectedCourse && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Form */}
-              <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 h-fit sticky top-24">
-                <h3 className="text-lg font-semibold mb-4 text-white">{isEditing ? 'Edit Video' : 'Add New Video'}</h3>
+              <div className="bg-white rounded-xl p-6 border border-slate-200 h-fit sticky top-24">
+                <h3 className="text-lg font-semibold mb-4 text-brand-purple">{isEditing ? 'Edit Video' : 'Add New Video'}</h3>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
+                    <label className="block text-sm font-medium text-slate-600 mb-1">Title</label>
                     <input 
                       type="text" required value={title} onChange={e => setTitle(e.target.value)}
-                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white outline-none focus:border-indigo-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-brand-purple outline-none focus:border-brand-red"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">YouTube URL (Unlisted)</label>
+                    <label className="block text-sm font-medium text-slate-600 mb-1">YouTube URL (Unlisted)</label>
                     <input 
                       type="url" required value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)}
                       placeholder="https://youtu.be/..."
-                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white outline-none focus:border-indigo-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-brand-purple outline-none focus:border-brand-red"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Duration Text</label>
+                    <label className="block text-sm font-medium text-slate-600 mb-1">Duration Text</label>
                     <input 
                       type="text" value={durationText} onChange={e => setDurationText(e.target.value)}
                       placeholder="e.g. 12:34"
-                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white outline-none focus:border-indigo-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-brand-purple outline-none focus:border-brand-red"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Description (Optional)</label>
+                    <label className="block text-sm font-medium text-slate-600 mb-1">Description (Optional)</label>
                     <textarea 
                       rows="3" value={description} onChange={e => setDescription(e.target.value)}
-                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white outline-none focus:border-indigo-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-brand-purple outline-none focus:border-brand-red"
                     ></textarea>
                   </div>
                   
                   <div className="flex gap-4 pt-2">
-                    <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg flex items-center justify-center gap-2 transition">
+                    <button type="submit" className="flex-1 bg-brand-red hover:bg-brand-red-dark text-white px-6 py-2 rounded-lg flex items-center justify-center gap-2 transition">
                       {isEditing ? <Edit2 className="w-4 h-4" /> : <PlusCircle className="w-4 h-4" />}
                       {isEditing ? 'Update Video' : 'Add Video'}
                     </button>
                     {isEditing && (
-                      <button type="button" onClick={resetForm} className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition">
+                      <button type="button" onClick={resetForm} className="bg-slate-100 hover:bg-slate-200 text-brand-purple px-6 py-2 rounded-lg transition">
                         Cancel
                       </button>
                     )}
@@ -231,34 +231,34 @@ export default function ManageVideos() {
               
               {/* List */}
               <div className="space-y-3">
-                <h3 className="text-lg font-semibold mb-4 text-white">Course Videos ({videos.length})</h3>
+                <h3 className="text-lg font-semibold mb-4 text-brand-purple">Course Videos ({videos.length})</h3>
                 {videos.map((video, index) => (
-                  <div key={video.id} className="bg-gray-800 rounded-xl p-4 border border-gray-700 flex gap-4 items-center group">
+                  <div key={video.id} className="bg-white rounded-xl p-4 border border-slate-200 flex gap-4 items-center group">
                     <div className="flex flex-col gap-1">
                       <button 
                         onClick={() => moveVideo(index, 'up')} disabled={index === 0}
-                        className={`p-1 rounded transition ${index === 0 ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:bg-gray-700 hover:text-white'}`}
+                        className={`p-1 rounded transition ${index === 0 ? 'text-slate-500 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-brand-purple'}`}
                       >
                         <ArrowUp className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => moveVideo(index, 'down')} disabled={index === videos.length - 1}
-                        className={`p-1 rounded transition ${index === videos.length - 1 ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:bg-gray-700 hover:text-white'}`}
+                        className={`p-1 rounded transition ${index === videos.length - 1 ? 'text-slate-500 cursor-not-allowed' : 'text-slate-600 hover:bg-slate-100 hover:text-brand-purple'}`}
                       >
                         <ArrowDown className="w-4 h-4" />
                       </button>
                     </div>
                     
                     <div className="flex-1">
-                      <h4 className="font-semibold text-white">{video.title}</h4>
-                      <p className="text-sm text-gray-500">{video.duration_text || 'No duration'}</p>
+                      <h4 className="font-semibold text-brand-purple">{video.title}</h4>
+                      <p className="text-sm text-slate-600">{video.duration_text || 'No duration'}</p>
                     </div>
                     
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                      <button onClick={() => editVideo(video)} className="p-2 text-indigo-400 hover:bg-indigo-500/10 rounded transition">
+                    <div className="flex gap-2">
+                      <button onClick={() => editVideo(video)} className="p-2 text-brand-red hover:bg-brand-red-dark/10 rounded transition">
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      <button onClick={() => deleteVideo(video.id)} className="p-2 text-red-400 hover:bg-red-500/10 rounded transition">
+                      <button onClick={() => deleteVideo(video.id)} className="p-2 text-brand-red hover:bg-red-500/10 rounded transition">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -266,7 +266,7 @@ export default function ManageVideos() {
                 ))}
                 
                 {videos.length === 0 && (
-                  <div className="p-8 text-center text-gray-500 bg-gray-800 rounded-xl border border-gray-700 border-dashed">
+                  <div className="p-8 text-center text-slate-600 bg-white rounded-xl border border-slate-200 border-dashed">
                     No videos for this course yet.
                   </div>
                 )}
